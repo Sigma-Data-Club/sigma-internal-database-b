@@ -1,11 +1,10 @@
 BEGIN;
 
 CREATE TABLE alumnado (
-  dni           VARCHAR(10)  PRIMARY KEY,
+  email          VARCHAR(20)  PRIMARY KEY,
   nombre        VARCHAR(100) NOT NULL,
   movil         VARCHAR(10)  NOT NULL UNIQUE,
-  email         VARCHAR(30)  NOT NULL UNIQUE,
-  grado         VARCHAR(10)  NOT NULL,
+  grado         VARCHAR(50)  NOT NULL,
   curso         VARCHAR(10)  NOT NULL
 );
 
@@ -49,42 +48,42 @@ CREATE TABLE publicacion_rrss (
 );
 
 CREATE TABLE registro_horas (
-  codigo        VARCHAR(10)  PRIMARY KEY,
-  dni_alumno    VARCHAR(10)  NOT NULL,
+  codigo        VARCHAR(10) PRIMARY KEY,
+  email_alumno  VARCHAR(20)  NOT NULL,
   fecha         DATE         NOT NULL,
   horas         REAL         NOT NULL,
   concepto      VARCHAR(100),
   tipo          VARCHAR(20),
   CONSTRAINT fk_registrohoras_alumno
-    FOREIGN KEY (dni_alumno)
-    REFERENCES alumnado(dni)
+    FOREIGN KEY (email_alumno)
+    REFERENCES alumnado(email)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
 
 CREATE TABLE asignacion_credito (
   codigo_asignacion VARCHAR(10) PRIMARY KEY,
-  codigo_alumno     VARCHAR(10) NOT NULL,
+  email_alumno     VARCHAR(20) NOT NULL,
   creditos          VARCHAR(10) NOT NULL,
   fecha_asignacion  DATE        NOT NULL,
   motivo            VARCHAR(50),
   CONSTRAINT fk_asignacioncredito_alumno
-    FOREIGN KEY (codigo_alumno)
-    REFERENCES alumnado(dni)
+    FOREIGN KEY (email_alumno)
+    REFERENCES alumnado(email)
     ON DELETE CASCADE
     ON UPDATE CASCADE
 );
 
 CREATE TABLE participacion_proyecto (
-  dni              VARCHAR(10) NOT NULL,
+  email              VARCHAR(20) NOT NULL,
   codigo_proyecto  VARCHAR(10) NOT NULL,
   rol              VARCHAR(30),
   nivel_participacion VARCHAR(20),
   horas_dedicadas  INTEGER,
-  PRIMARY KEY (dni, codigo_proyecto),
+  PRIMARY KEY (email, codigo_proyecto),
   CONSTRAINT fk_participacion_alumno
-    FOREIGN KEY (dni)
-    REFERENCES alumnado(dni)
+    FOREIGN KEY (email)
+    REFERENCES alumnado(email)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT fk_participacion_proyecto
@@ -95,15 +94,15 @@ CREATE TABLE participacion_proyecto (
 );
 
 CREATE TABLE inscripcion (
-  dni              VARCHAR(10) NOT NULL,
+  email              VARCHAR(20) NOT NULL,
   codigo_evento    VARCHAR(10) NOT NULL,
   fecha_inscripcion DATE       NOT NULL,
   canal            VARCHAR(30),
   asiste           BOOLEAN     NOT NULL,
-  PRIMARY KEY (dni, codigo_evento),
+  PRIMARY KEY (email, codigo_evento),
   CONSTRAINT fk_inscripcion_alumno
-    FOREIGN KEY (dni)
-    REFERENCES alumnado(dni)
+    FOREIGN KEY (email)
+    REFERENCES alumnado(email)
     ON DELETE CASCADE
     ON UPDATE CASCADE,
   CONSTRAINT fk_inscripcion_evento
@@ -168,10 +167,9 @@ CREATE TABLE metrica_publicacion (
   reposts        INTEGER,
   comentarios    INTEGER,
   visualizaciones INTEGER,
-  id_pub         VARCHAR(10) NOT NULL,
   PRIMARY KEY (codigo, fecha_medicion),
   CONSTRAINT fk_metrica_publicacion
-    FOREIGN KEY (id_pub)
+    FOREIGN KEY (codigo)
     REFERENCES publicacion_rrss(id_pub)
     ON DELETE CASCADE
     ON UPDATE CASCADE
